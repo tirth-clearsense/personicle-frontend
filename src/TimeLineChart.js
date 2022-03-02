@@ -96,8 +96,8 @@ function TimelineChart ({google}) {
       function resize () {
         const chart = new google.visualization.Timeline(document.getElementById('timeline'));
 
-        timelineOptions.width = .4 * window.innerWidth;
-        timelineOptions.height = .4 * window.innerHeight;
+        timelineOptions.width = .7 * window.innerWidth;
+        timelineOptions.height = .5 * window.innerHeight;
   
         dashboard.draw(data, options);
       }
