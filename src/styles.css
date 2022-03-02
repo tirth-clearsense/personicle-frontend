@@ -1,0 +1,24 @@
+
+  .modal-container {
+    height: 24.375rem;
+  }
+  
+
+  .modal-body {
+    font-size: 0.875rem;
+    letter-spacing: -0.14px;
+    line-height: 1.25em;
+    color: #919191;
+  }
+  
+  .modal-infotype {
+    color: white;
+    font-size: 1.125rem;
+    letter-spacing: -0.18;
+  }
+  
+  .modal-content {
+    width: 1100px;
+    height: 300px;
+    /* display: block;  */
+}

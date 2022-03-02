@@ -2,6 +2,7 @@
 import { useOktaAuth } from '@okta/okta-react';
 import React, { useEffect, useState } from 'react';
 import { Header, Icon , Button} from 'semantic-ui-react';
+import "./styles.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Modal,Container,Row,Col } from 'react-bootstrap';
 import TimelineChart from "./TimeLineChart";
@@ -116,13 +117,29 @@ async function authorizationWindow(e, redirectUrl){
                    <Button style={{marginTop:'9px'}}>Events Summary</Button>
               </div>
         </div>
-      
-        <Modal centered show={showChart} size="lg" onHide={handleClose} >
-            <Modal.Header closeButton>
+        <Modal
+
+        dialogClassName="modal-container"
+        keyboard
+        centered
+        size="lg"
+        show={showChart}
+        onHide={handleClose}
+      >
+        <Modal.Header  closeButton>
+          <Modal.Title>Your Activities</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="modal-body">
+       
+         <TimelineChart google={google}/>  
+        </Modal.Body>
+      </Modal>
+        {/* <Modal dialogClassName="model-style" centered show={showChart}  onHide={handleClose} > */}
+            {/* <Modal.Header closeButton>
                 <Modal.Title >Your Activities</Modal.Title>
-            </Modal.Header>
-            <Modal.Body> <TimelineChart style={{position:'relative'}}google={google}/> </Modal.Body>
-        </Modal>
+            </Modal.Header> */}
+            {/* <Modal.Body> <TimelineChart google={google}/> </Modal.Body> */}
+        {/* </Modal> */}
     </>
   );
 };
