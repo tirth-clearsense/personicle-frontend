@@ -1,15 +1,20 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 import sample_events from "../sample_data/sample_events"
-import { ConsoleWriter } from "istanbul-lib-report";
 
 function TimelineChart ({google}) {
+  
   const [chart, setChart] = useState(null);
+  const [dimensions, setDimensions] = useState({ 
+    height: 0,
+    width: 0
+  })
 
   useEffect(() => {
+
     if (google && !chart) {
 
-      function endDateInMilliseconds(startDate, duration) {
+    function endDateInMilliseconds(startDate, duration) {
         var formattedDate = dateToStandardFormat(startDate)
         var startDateInMS = formattedDate.getTime(); 
         var endDateInMS = startDateInMS + duration
@@ -31,29 +36,28 @@ function TimelineChart ({google}) {
      }
      
      let events = sample_events["sample_events"];
-
+  
      function GFG_Fun(endDateInMS) {
             var endDate = new Date(endDateInMS);
             return endDate;
       }
 
       // Create the data table.
-      
       const data = new google.visualization.DataTable();
+  
       data.addColumn({ type: 'string', id: 'Events' });
       data.addColumn({ type: 'string', id: 'Task ID' });
       data.addColumn({ type: 'date', id: 'Start Date' });
       data.addColumn({ type: 'date', id: 'End Date' });
         events.forEach(event => 
         {
-          var s = new Date(event.startTime)
           data.addRow([event.activityName, event.logId.toString(), dateToStandardFormat(event.startTime), GFG_Fun(endDateInMilliseconds(event.startTime, event.duration))]);
         });
   
       // Set chart options
       var options = {'title':'Gantt Chart Timeline Visualization',
-                    'width':500,
-                    'height':300,
+                    'width':' 100%',
+                    'height': '100%',
                     timeline: { groupByRowLabel: true}, 
                     displayAnnotations: true};
 
@@ -71,38 +75,56 @@ function TimelineChart ({google}) {
       });
 
       // Create a timeline chart, passing some options
+      var timelineOptions = {
+        width: window.innerWidth,
+        height: 500, //window.innerHeight,        
+    };
+
       var timelineChart = new google.visualization.ChartWrapper({
         'chartType': 'Timeline',
         'containerId': 'timeline',
-        'options': {
-          'width': '100%',
-          'height': 215,
-          'pieSliceText': 'value',
-          'legend': 'right'
-        }
+        'options': timelineOptions
       });
 
-      // Instantiate and draw our chart, passing in some options.
-      //var container = document.getElementById('timeline');
-      //var chart = new google.visualization.Timeline(container);
+      // Instantiate and draw our dashboard and chart, passing in some options.
       var dashboard = new google.visualization.Dashboard(
-                     document.getElementById('dashboard_div'));
+        document.getElementById('dashboard_div'));
      
-      const chart = new google.visualization.Timeline(document.getElementById('timeline'));
-      dashboard.bind(dateRangeSlider, timelineChart);
-      dashboard.draw(data, options);
-      setChart(timeline);
-      
+        dashboard.bind(dateRangeSlider, timelineChart);
+        dashboard.draw(data, options);
+        
+      function resize () {
+        const chart = new google.visualization.Timeline(document.getElementById('timeline'));
+
+        timelineOptions.width = .4 * window.innerWidth;
+        timelineOptions.height = .4 * window.innerHeight;
+  
+        dashboard.draw(data, options);
+      }
+
+      window.onload = resize;
+      window.onresize = resize;
     }
+    
+    //Re-Render Chart on Window Resize
+    // return _ => {
+    //   window.removeEventListener('resize', handleResize)}  
+
   }, [google, chart]);
+
+
 
   return (
     <>
+    <div>
+      <h1>Gantt Chart</h1>
+      <p> This is a simple Next.js page showing a Gantt Chart with activities imported from exercise.json in the PMData Set. Activities are on the y-axis, and dates with start and end time on the x-axis.  </p>
+    </div>
       {!google && <Spinner />}
-        <div id="dashboard_div">
-          <div id="filter_div"></div>
-          <div id="timeline" className={!google ? '.d-none' : ''} />
-        </div>
+      <div id="dashboard_div">
+        <div id="filter_div"></div>
+        <div id="timeline" className={!google ? 'd-none' : ''}/>
+      </div>
       
     </>
   )
