@@ -116,7 +116,7 @@ async function getDataFromApi(){
   var formattedThreeMonthsAgo = threeMonthsAgo.format('YYYY-MM-DD HH:mm:ss.SSSSSS');
   var currentTime = moment().utc().format('YYYY-MM-DD HH:mm:ss.SSSSSS');
   // const url = "http://127.0.0.1:8000/request/events?"+"user_id=test_user&"+"datatype=com.personicle.individual.datastreams.heartrate&startTime=2022-02-28T16:50:11.226854&endTime=2022-02-28T16:50:11.226990"
-  const url = "https://20.121.8.101:3000/request/events?&user_id="+"jorindo.kgp@gmail.com"+"&startTime="+formattedThreeMonthsAgo+"&endTime="+currentTime
+  const url = "https://20.121.8.101:3000/request/events?&user_id="+userInfo.sub+"&startTime="+formattedThreeMonthsAgo+"&endTime="+currentTime
   // const url = "https://20.121.8.101:3000/request/events?&user_id="+"jorindo.kgp@gmail.com"+"&startTime="+"2021-12-09 08:26:00.000000"+"&endTime="+"2021-12-09 15:42:00.000000"
   
   fetch(url, {
