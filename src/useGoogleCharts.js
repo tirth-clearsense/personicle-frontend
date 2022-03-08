@@ -1,7 +1,7 @@
 // useGoogle.js
 
 import { useEffect, useState } from "react";
-
+  
 function useGoogleCharts () {
   const [google, setGoogle] = useState(null);
   

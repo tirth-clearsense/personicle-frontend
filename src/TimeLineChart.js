@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 import sample_events from "../sample_data/sample_events"
 
-function TimelineChart ({google}) {
-  
+function TimelineChart ({google,userData}) {
+  console.log(userData.userData)
   const [chart, setChart] = useState(null);
   const [dimensions, setDimensions] = useState({ 
     height: 0,
@@ -15,7 +15,7 @@ function TimelineChart ({google}) {
     if (google && !chart) {
 
     function endDateInMilliseconds(startDate, duration) {
-        var formattedDate = dateToStandardFormat(startDate)
+        var formattedDate = dateToStandardFormat(startDate,true)
         var startDateInMS = formattedDate.getTime(); 
         var endDateInMS = startDateInMS + duration
         return endDateInMS;
@@ -23,6 +23,7 @@ function TimelineChart ({google}) {
 
      // convert date to standard format to be compatible with different browsers
      function dateToStandardFormat(date){
+       
         var values = date.split(/[^0-9]/),
         year = parseInt(values[0]),
         month = parseInt(values[1]) - 1,
@@ -30,18 +31,24 @@ function TimelineChart ({google}) {
         hours = parseInt(values[3]),
         minutes = parseInt(values[4]),
         seconds = parseInt(values[5])
-
-        var formattedDate = new Date(year, month, day, hours, minutes, seconds);
+        
+      
+        // endDate == true ? (formattedDate = new Date(year, month+1, day, hours, minutes, seconds)) : (formattedDate = new Date(year, month-1, day, hours, minutes, seconds));
+         var formattedDate =  new Date(year, month, day, hours, minutes, seconds)
+        console.log(formattedDate)
         return formattedDate
      }
      
      let events = sample_events["sample_events"];
-  
+    //  let currEvent = data
+
      function GFG_Fun(endDateInMS) {
             var endDate = new Date(endDateInMS);
+            console.log("enddate "+endDate)
             return endDate;
       }
-
+     
+      
       // Create the data table.
       const data = new google.visualization.DataTable();
   
@@ -49,17 +56,26 @@ function TimelineChart ({google}) {
       data.addColumn({ type: 'string', id: 'Task ID' });
       data.addColumn({ type: 'date', id: 'Start Date' });
       data.addColumn({ type: 'date', id: 'End Date' });
-        events.forEach(event => 
-        {
-          data.addRow([event.activityName, event.logId.toString(), dateToStandardFormat(event.startTime), GFG_Fun(endDateInMilliseconds(event.startTime, event.duration))]);
-        });
+      
+            // d.setHours(0, 0, 0, 0);
+      //  console.log(d.toUTCString);
+        // events.forEach(event => 
+        // {
+        //   data.addRow([event.activityName, event.logId.toString(), dateToStandardFormat(event.startTime), GFG_Fun(endDateInMilliseconds(event.startTime, event.duration))]);
+        // });
+      
+        userData.userData.forEach(d => 
+          {console.log(d.event_name)
+           console.log(d.start_time)
+            data.addRow([d.event_name, "", dateToStandardFormat(d.start_time),  GFG_Fun(endDateInMilliseconds(d.start_time, d.parameters.duration))]);
+          });
   
       // Set chart options
       var options = {'title':'Gantt Chart Timeline Visualization',
                     'width':' 100%',
                     'height': '100%',
                     timeline: { groupByRowLabel: true}, 
-                    displayAnnotations: true};
+                    displayAnnotations: false};
 
       // Create a dashboard.
       var dashboard = new google.visualization.Dashboard(
@@ -96,7 +112,7 @@ function TimelineChart ({google}) {
       function resize () {
         const chart = new google.visualization.Timeline(document.getElementById('timeline'));
 
-        timelineOptions.width = .7 * window.innerWidth;
+        timelineOptions.width = .45 * window.innerWidth;
         timelineOptions.height = .5 * window.innerHeight;
   
         dashboard.draw(data, options);
