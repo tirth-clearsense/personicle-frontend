@@ -196,7 +196,7 @@ async function getDataFromApi(){
         </Modal.Header>
         <Modal.Body className="modal-body">
           {showUserData.loading && ( <div> <p> <h3>Fetching your activities </h3></p></div>)}
-          {!showUserData.loading && showUserData.userData.length==0&& ( <div> <p>No Activites for the past three months</p></div>)}
+          {!showUserData.loading && showUserData.userData.length==0&& ( <div> <p><h3>No Activites for the past three months</h3></p></div>)}
 
           {!showUserData.loading && showUserData.userData.length>0 && <TimelineChart google={google} userData={showUserData}/>  }
          
