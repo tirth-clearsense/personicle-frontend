@@ -20,9 +20,9 @@ const Connections = () => {
   const[showChart,setShowChart] = useState(false)
   const[showSummary,setShowSummary] = useState(false)
   const [showUserData, setUserData] = useState({userData:[],loading:true})
+  const [userSummary, setUserSummary] = useState({userData:[],loading:true})
 
-  const handleShow = () => {
-    // if(!showUserData.loading)
+  const handleActivities = () => {
       setShowChart(true)
   }
   const handleClose = () =>{
@@ -37,7 +37,6 @@ const Connections = () => {
   useEffect(() => {
     if (authState && authState.isAuthenticated) {
       const accessToken = oktaAuth.getAccessToken();
-      console.log(accessToken)
       fetch(config.resourceServer.stagingServerAuthenticate, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -116,9 +115,10 @@ async function getDataFromApi(){
   var threeMonthsAgo = moment().subtract(3, 'months');
   var formattedThreeMonthsAgo = threeMonthsAgo.format('YYYY-MM-DD HH:mm:ss.SSSSSS');
   var currentTime = moment().utc().format('YYYY-MM-DD HH:mm:ss.SSSSSS');
-  console.log("currenttime: "+ currentTime)
   // const url = "http://127.0.0.1:8000/request/events?"+"user_id=test_user&"+"datatype=com.personicle.individual.datastreams.heartrate&startTime=2022-02-28T16:50:11.226854&endTime=2022-02-28T16:50:11.226990"
-  const url = "https://20.121.8.101:3000/request/events?&user_id="+userInfo.sub+"&startTime="+formattedThreeMonthsAgo+"&endTime="+currentTime
+  const url = "https://20.121.8.101:3000/request/events?&user_id="+"jorindo.kgp@gmail.com"+"&startTime="+formattedThreeMonthsAgo+"&endTime="+currentTime
+  // const url = "https://20.121.8.101:3000/request/events?&user_id="+"jorindo.kgp@gmail.com"+"&startTime="+"2021-12-09 08:26:00.000000"+"&endTime="+"2021-12-09 15:42:00.000000"
+  
   fetch(url, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -132,7 +132,7 @@ async function getDataFromApi(){
   })
   .then((data) => {
     setUserData({userData: data, loading: false})
-    console.log(data[0].parameters.duration)
+    setUserSummary({userData: data, loading: false})
   })
   .catch((err) => {
     console.error(err);
@@ -156,17 +156,17 @@ async function getDataFromApi(){
               <div className="col-sm">
                     <Button style={{marginTop:'9px'}} onClick={()=>{
                       getDataFromApi();
-                      handleShow();
+                      handleActivities();
                     }}>View Your Activites</Button>
               </div>
               <div className="col-sm">
                    <Button style={{marginTop:'9px'}}   onClick={() => {
-                       
+                        getDataFromApi();
                         handleSummary();
                   }}>Events Summary</Button>
               </div>
         </div>
-        {/* modal for summary  */}
+        {/* modal for summary (Bar chart) */}
         <Modal
           dialogClassName="modal-container"
           keyboard
@@ -179,10 +179,12 @@ async function getDataFromApi(){
             <Modal.Title>Your Summary</Modal.Title>
           </Modal.Header>
           <Modal.Body className="modal-body">
-              <BarChart google={google}/>
+              {userSummary.loading && ( <div> <p> <h3>Fetching your summary </h3></p></div>)}
+              {!userSummary.loading && userSummary.userData.length==0 && ( <div> <p><h3>No summary for the past three months</h3></p></div>)}
+              {!userSummary.loading  && userSummary.userData.length>0 && <BarChart google={google} userSummary={userSummary}/> }
           </Modal.Body>
       </Modal>
-        {/* modal for activites */}
+        {/* modal for activites (timeline chart)*/}
         <Modal
         dialogClassName="modal-container"
         keyboard
@@ -196,7 +198,7 @@ async function getDataFromApi(){
         </Modal.Header>
         <Modal.Body className="modal-body">
           {showUserData.loading && ( <div> <p> <h3>Fetching your activities </h3></p></div>)}
-          {!showUserData.loading && showUserData.userData.length==0&& ( <div> <p><h3>No Activites for the past three months</h3></p></div>)}
+          {!showUserData.loading && showUserData.userData.length==0 && ( <div> <p><h3>No Activites for the past three months</h3></p></div>)}
 
           {!showUserData.loading && showUserData.userData.length>0 && <TimelineChart google={google} userData={showUserData}/>  }
          

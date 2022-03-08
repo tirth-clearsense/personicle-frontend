@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 import sample_events from "../sample_data/sample_events"
 
-function BarChart ({google}) {
+function BarChart ({google, userSummary}) {
     const [chart, setChart] = useState(null);
     const [dimensions, setDimensions] = useState({ 
       height: 0,
@@ -24,23 +24,23 @@ function BarChart ({google}) {
         const data = new google.visualization.DataTable();
         data.addColumn({ type: 'string', id: 'Events' });
         data.addColumn({ type: 'number', id: 'Duration' });
-            events.forEach(event => {
-                if (event.activityName in totalDuration)
+            userSummary.userData.forEach(event => {
+                if (event.event_name in totalDuration)
                     {
-                        totalDuration[event.activityName] = totalDuration[event.activityName] + totalDurationInMins(event.duration);
+                        totalDuration[event.event_name] = totalDuration[event.event_name] + totalDurationInMins(event.parameters.duration);
                     }
                 else 
                     {
-                        totalDuration[event.activityName] = totalDurationInMins(event.duration)
+                        totalDuration[event.event_name] = totalDurationInMins(event.parameters.duration)
                     } 
                    
                 }
             );
 
-            console.log(totalDuration);
+            // console.log(totalDuration);
             
             for (const key in totalDuration) {
-                console.log(`${key}: ${totalDuration[key]}`);
+                // console.log(`${key}: ${totalDuration[key]}`);
                 data.addRow([key, totalDuration[key]]);
               }
 
@@ -83,7 +83,7 @@ function BarChart ({google}) {
     dashboard.draw(data,options);
 
     function resize () {
-      console.log("called barchart resize");
+      // console.log("called barchart resize");
       const chart = new google.visualization.BarChart(document.getElementById('chart_div'));
 
       barChartOptions.width = .4 * window.innerWidth;

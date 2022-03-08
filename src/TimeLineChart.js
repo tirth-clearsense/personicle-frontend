@@ -3,7 +3,6 @@ import { Spinner } from "react-bootstrap";
 import sample_events from "../sample_data/sample_events"
 
 function TimelineChart ({google,userData}) {
-  console.log(userData.userData)
   const [chart, setChart] = useState(null);
   const [dimensions, setDimensions] = useState({ 
     height: 0,
@@ -31,11 +30,8 @@ function TimelineChart ({google,userData}) {
         hours = parseInt(values[3]),
         minutes = parseInt(values[4]),
         seconds = parseInt(values[5])
-        
-      
-        // endDate == true ? (formattedDate = new Date(year, month+1, day, hours, minutes, seconds)) : (formattedDate = new Date(year, month-1, day, hours, minutes, seconds));
          var formattedDate =  new Date(year, month, day, hours, minutes, seconds)
-        console.log(formattedDate)
+        // console.log(formattedDate)
         return formattedDate
      }
      
@@ -44,7 +40,6 @@ function TimelineChart ({google,userData}) {
 
      function GFG_Fun(endDateInMS) {
             var endDate = new Date(endDateInMS);
-            console.log("enddate "+endDate)
             return endDate;
       }
      
@@ -63,10 +58,13 @@ function TimelineChart ({google,userData}) {
         // {
         //   data.addRow([event.activityName, event.logId.toString(), dateToStandardFormat(event.startTime), GFG_Fun(endDateInMilliseconds(event.startTime, event.duration))]);
         // });
+        var arr = userData.userData
       
-        userData.userData.forEach(d => 
-          {console.log(d.event_name)
-           console.log(d.start_time)
+        var userDataSet = arr.filter((arr, index, self) =>
+          index === self.findIndex((t) => (t.event_name === arr.event_name && t.start_time === arr.start_time  && t.end_time == arr.end_time)))
+        
+        userDataSet.forEach(d => 
+          {
             data.addRow([d.event_name, "", dateToStandardFormat(d.start_time),  GFG_Fun(endDateInMilliseconds(d.start_time, d.parameters.duration))]);
           });
   
