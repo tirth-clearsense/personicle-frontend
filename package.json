@@ -20,7 +20,7 @@
     "text-encoding": "0.7.0"
   },
   "scripts": {
-    "start": "node server/server,",
+    "start": "node server/server.js",
     "start:browser:none": "BROWSER=none yarn start",
     "build": "react-app-rewired build",
     "eject": "react-scripts eject"
